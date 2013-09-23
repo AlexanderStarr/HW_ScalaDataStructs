@@ -88,8 +88,13 @@ class ListDictionary extends Dictionary {
        It returns a dictionary meeting the specifications of put. */
     def rPut(rKey:String, rValue: Any, rD:List[(String,Any)]):List[(String,Any)] = {
       rD match {
+        // End of list is reached, add the new key/value entry.
         case Nil => (rKey, List[Any](rValue)) :: rD
+
+        // The key is found, update the value entry to include new value.
         case (`rKey`, v:List[Any]) :: t  => (`rKey`, rValue :: v) :: t
+
+        // The key is not found, 'put' the value in the tail of the list.
         case h :: t => h :: rPut(rKey, rValue, t)
       }
     }
@@ -99,7 +104,24 @@ class ListDictionary extends Dictionary {
   }
 
   def get(key:String):Option[Any] = {
-    Some("string")
+    /* rGet recursively looks through the list.
+       It takes the key and dictionary as arguments, and returns None
+       if the key is not found, or Some(List[Any]) of values if found. */
+    def rGet(rKey:String, rD:List[(String,Any)]):Option[Any] = {
+      rD match {
+        // End of list is reached, return None.
+        case Nil => None
+
+        // The key is found, return Some(ValueList).
+        case (`rKey`, v:List[Any]) :: t => Some(v)
+
+        // The key is not found, try to 'get' from the tail.
+        case h :: t => rGet(rKey, t)
+      }
+    }
+
+    /* Call rGet on the key provided by get. */
+    rGet(key, d)
   }
 
   def remove(key:String):Option[Any] = {
