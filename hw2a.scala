@@ -50,15 +50,27 @@ abstract class Dictionary {
   /* getAll(k) returns the list of all the values associated
      with key k in the dictionary.
   */   
-  def getAll(key:String):List[Any] =
-    Nil // replace this whole line with your implementation
-  
+  def getAll(key:String):List[Any] = {
+    var valList = List[Any]()
+    var value = remove(key)
+    while (value) {
+      valList = value :: valList
+      value = remove(key)
+    }
+    for(v <- valList) {
+      put(k,v)
+    }
+    valList
+  }  
 
   /* removeAll(k) removes from the dictionary all the values 
      associated with key k in the dictionary, if any.
   */   
   def removeAll(key:String) {
-    // replace this comment with your implementation
+    var value = remove(key)
+    while (value) {
+      value = remove(key)
+    }
   }
 }
 
@@ -68,8 +80,6 @@ class ListDictionary extends Dictionary {
   /* the dictionary is implemented using a list of key/value pairs */
   private var d = List[(String,Any)]()
   
-  // add your implementation of Dictionary's abstract methods here
-
 }
 
 
