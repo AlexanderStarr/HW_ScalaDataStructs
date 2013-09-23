@@ -53,12 +53,12 @@ abstract class Dictionary {
   def getAll(key:String):List[Any] = {
     var valList = List[Any]()
     var value = remove(key)
-    while (value) {
+    while (value != None) {
       valList = value :: valList
       value = remove(key)
     }
     for(v <- valList) {
-      put(k,v)
+      put(key,v)
     }
     valList
   }  
@@ -68,7 +68,7 @@ abstract class Dictionary {
   */   
   def removeAll(key:String) {
     var value = remove(key)
-    while (value) {
+    while (value != None) {
       value = remove(key)
     }
   }
@@ -77,9 +77,42 @@ abstract class Dictionary {
 
 
 class ListDictionary extends Dictionary {
-  /* the dictionary is implemented using a list of key/value pairs */
+  /* the dictionary is implemented using a list of key/value pairs.
+     For uniformity, the value will always be a List[Any], containing all
+     of the values associated with that key. */
   private var d = List[(String,Any)]()
-  
+
+  def put(key:String, value: Any):Unit = {
+    /* rPut is a recursive strategy of putting something in the dictionary.
+       It takes an extra argument (the dictionary) to allow for recursive calls.
+       It returns a dictionary meeting the specifications of put. */
+    def rPut(rKey:String, rValue: Any, rD:List[(String,Any)]):List[(String,Any)] = {
+      rD match {
+        case Nil => (rKey, List[Any](rValue)) :: rD
+        case (`rKey`, v:List[Any]) :: t  => (`rKey`, rValue :: v) :: t
+        case h :: t => h :: rPut(rKey, rValue, t)
+      }
+    }
+
+    /* Here we now call rPut on d, replacing d with the updated dictionary. */
+    d = rPut(key, value, d)
+  }
+
+  def get(key:String):Option[Any] = {
+    Some("string")
+  }
+
+  def remove(key:String):Option[Any] = {
+    Some("string")
+  }
+
+  def toList():List[(String,Any)] = {
+    List(("string", "something"))
+  }
+
+  override def toString():String = {
+    "String"
+  }
 }
 
 
