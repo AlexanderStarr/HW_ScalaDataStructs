@@ -153,8 +153,25 @@ class ListDictionary extends Dictionary {
     results._2
   }
 
-  def toList():List[(String,Any)] = {
-    List[(String,Any)](("string", "something"))
+  def toList():List[(String, Any)] = {
+    /* flatten recursively expands a dictionary tuple into a list of
+       (key, value) tuples */
+    def flatten(tup:(String, Any)):List[(String, Any)] = {
+      tup match {
+        case (key, Nil) => Nil
+        case (key, value :: t) => (key, value) :: flatten(key, t)
+      }
+    }
+
+    /* addElements recursively flattens each element of a list */
+    def addElements(L:List[(String, Any)]):List[(String, Any)] = {
+      L match {
+        case Nil => List[(String,Any)]()
+        case h :: t => flatten(h) ++ addElements(t)
+      }
+    }
+    
+    addElements(d)
   }
 
   override def toString():String = {
