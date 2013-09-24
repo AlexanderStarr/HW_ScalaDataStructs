@@ -80,7 +80,7 @@ class ListDictionary extends Dictionary {
   /* the dictionary is implemented using a list of key/value pairs.
      For uniformity, the value will always be a List[Any], containing all
      of the values associated with that key. */
-  private var d = List[(String,Any)]()
+  var d = List[(String,Any)]()
 
   def put(key:String, value: Any):Unit = {
     /* rPut is a recursive strategy of putting something in the dictionary.
@@ -106,14 +106,14 @@ class ListDictionary extends Dictionary {
   def get(key:String):Option[Any] = {
     /* rGet recursively looks through the list.
        It takes the key and dictionary as arguments, and returns None
-       if the key is not found, or Some(List[Any]) of values if found. */
+       if the key is not found, or Some(value) if found. */
     def rGet(rKey:String, rD:List[(String,Any)]):Option[Any] = {
       rD match {
         // End of list is reached, return None.
         case Nil => None
 
-        // The key is found, return Some(ValueList).
-        case (`rKey`, v:List[Any]) :: t => Some(v)
+        // The key is found, return Some(value).
+        case (`rKey`, v:List[Any]) :: t => Some(v.head)
 
         // The key is not found, try to 'get' from the tail.
         case h :: t => rGet(rKey, t)
@@ -125,11 +125,36 @@ class ListDictionary extends Dictionary {
   }
 
   def remove(key:String):Option[Any] = {
-    Some("string")
+    /* rRemove recursively looks through the list.
+       It takes the key and dictionary as arguments, and returns
+       (List[(String,Any)], Option[Any]).  The first item being the new
+       dictionary list, and the second being the result of the search. */
+    def rGet(rKey:String, rD:List[(String,Any)]):(List[(String,Any)],Option[Any]) = {
+      rD match {
+        // End of list is reached, return None.
+        case Nil => (rD, None)
+
+        // The key is found, remove then return Some(value).
+        case (`rKey`, v:List[Any]) :: t => {
+          // Remove the key/value entry if there is only one value.
+          if (v.length == 1) (t, Some(v.head))
+          // If multiple entries, remove the head entry but keep the tail.
+          else ((`rKey`, v.tail) :: t, Some(v.head)) 
+        }
+
+        // The key is not found, try to 'get' from the tail.
+        case h :: t => rGet(rKey, t)
+      }
+    }
+
+    /* Call rGet on the key provided by get. */
+    var results:(List[(String,Any)], Option[Any]) = rGet(key, d)
+    d = results._1
+    results._2
   }
 
   def toList():List[(String,Any)] = {
-    List(("string", "something"))
+    List[(String,Any)](("string", "something"))
   }
 
   override def toString():String = {
