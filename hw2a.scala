@@ -54,7 +54,7 @@ abstract class Dictionary {
     var valList = List[Any]()
     var value = remove(key)
     while (value != None) {
-      valList = value :: valList
+      valList = value.get :: valList  // remove() returns a Some(), so get the value
       value = remove(key)
     }
     for(v <- valList) {
@@ -80,7 +80,7 @@ class ListDictionary extends Dictionary {
   /* the dictionary is implemented using a list of key/value pairs.
      For uniformity, the value will always be a List[Any], containing all
      of the values associated with that key. */
-  var d = List[(String,Any)]()
+  private var d = List[(String,Any)]()
 
   def put(key:String, value: Any):Unit = {
     /* rPut is a recursive strategy of putting something in the dictionary.
