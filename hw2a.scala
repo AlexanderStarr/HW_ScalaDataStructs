@@ -175,7 +175,15 @@ class ListDictionary extends Dictionary {
   }
 
   override def toString():String = {
-    "String"
+    def rElemsToString(flatList:List[(String, Any)]):String = {
+      flatList match {
+        case Nil => ")"
+        case h :: Nil => h._1 + " -> " + h._2 + ")"
+        case h :: t => h._1 + " -> " + h._2 + ", " + rElemsToString(t)
+      }
+    }
+
+    "Dictionary(" + rElemsToString(toList())
   }
 }
 
