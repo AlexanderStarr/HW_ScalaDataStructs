@@ -128,8 +128,13 @@ class Matrix private (a:Array[Vec]) {
 	   - for all i in [0 .. h-1] and j in [0 .. w-1],
 	     m(i,j) == this(i,j) + other(i,j)
 	*/
-	def +(other:Matrix) =  
-	  this // replace this whole line with your implementation
+	def +(other:Matrix) = {
+    val newA = rows
+    for(i <- 0 to h-1) {
+      newA(i) = newA(i) + other.rows(i)
+    }
+    new Matrix(newA)
+  }
 
  /* given a j in [0 .. w-1],
     col(j) returns a vector v whose elements come 
