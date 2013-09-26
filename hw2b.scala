@@ -130,7 +130,7 @@ class Matrix private (a:Array[Vec]) {
 	*/
 	def +(other:Matrix) = {
     val newA = rows
-    for(i <- 0 to h-1) {
+    for(i <- 0 to h - 1) {
       newA(i) = newA(i) + other.rows(i)
     }
     new Matrix(newA)
@@ -156,8 +156,13 @@ class Matrix private (a:Array[Vec]) {
 
 	   Suggestion: use method col
 	*/
- def transpose =  
-	  this // replace this whole line with your implementation
+ def transpose = {
+  val newA = Array.fill(w){new Vec(0.0)}
+  for(i <- 0 to w - 1) {
+    newA(i) = col(i)
+  }
+  new Matrix(newA)
+ }
   
   
   /* given an i in [0 .. h-1], rowToString(i) 
