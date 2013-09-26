@@ -15,10 +15,13 @@
 class Vec private (private val elems:Array[Double]) {
   val length = elems.length
   
+  /* Initializes a vector with a single value x. */
   def this(x:Double) = this(Array(x))
 
+  /* Returns the double at index i. */
   def apply(i:Int) = elems(i)
   
+  /* Concatenates two vectors. */
   def ++(other:Vec) = {
     val r_length = length + other.length
     val r_elems = new Array[Double](r_length)
@@ -27,12 +30,14 @@ class Vec private (private val elems:Array[Double]) {
     new Vec(r_elems)
   }
 
+  /* Adds each element of one vector to the corresponding one in the other. */
   def +(other:Vec) = {
     val r_elems = new Array[Double](length)
     for (i <- 0 to length - 1) r_elems(i) = elems(i) + other.elems(i)
     new Vec(r_elems)
   }
   
+  /* Sums the multiplication of each corresponding element in two Vecs. */
   def *(other:Vec) = {
     var p = 0.0
     for (i <- 0 to length - 1) 
@@ -74,24 +79,23 @@ class Matrix private (a:Array[Vec]) {
 
   // Public constructor
   def this(v:Vec) = this(Array(v))
-  def this(x:Double) = this(new Vec(x))
+  def this(x:Double) = this(Array[Vec](new Vec(x)))
  
   // the array is stored as is in the private field rows
   // the element at position (i,j) in the matrix is stored
   // as the j-th element of the i-th vector in rows
-	 private val rows = a
+  private val rows = a
 
 	// integer field h stores the height of the matrix
-	val h = 0 // replace with your definition of h
-	
- // integer field w stores the width of the matrix
- val w = 0 // replace with your definition of h
+	val h = rows.length
+
+  // integer field w stores the width of the matrix
+  val w = rows(0).length
 	
  /* given i in [0 .. h-1] and j in [1 .. w-1],
     apply(i,j) returns the matrix element at position (i,j)
  */
- def apply(i:Int, j:Int) = 
-   0.0 // replace this whole line with your implementation 
+ def apply(i:Int, j:Int) = a(i)(j)
   
 	/* given a matrix other with other.w == w,
 	   /(other) returns a new matrix m such that
@@ -149,7 +153,7 @@ class Matrix private (a:Array[Vec]) {
   
   /* given an i in [0 .. h-1], rowToString(i) 
     returns a string of the form  | d1 d2 ... dw |
-    where d1, ..., dw are the (the string representation of)
+    where d1, ..., dw are the (the string representations of)
     the elements in row i 
  */
  private def rowToString(i:Int) = {
@@ -170,8 +174,13 @@ class Matrix private (a:Array[Vec]) {
    
    where d_ij is the (the string representation of) this(i,j)
  */
- override def toString =  
-	  "matrix" // replace this whole line with your implementation
+ override def toString =  {
+  var s = ""
+  for (i <- 0 to h-1) {
+    s = s + this.rowToString(i) + "\n"
+  }
+  s
+ }
 
  // overrides the default definition of == (an alias of equals)
  override def equals(other:Any):Boolean = other match {
@@ -193,4 +202,3 @@ val m3 = m1 / m2 / m1
 val m4 = m1 ++ m2
 
 
-val m = new Matrix
