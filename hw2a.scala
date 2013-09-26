@@ -33,7 +33,7 @@ abstract class Dictionary {
     If multiple values have the same key k, each is listed
     in a separate pair with k.
    */
-   def toList():List[(String,Any)]
+   def toList():List[(String, Any)]
 
  /* toString() returns a string containing all the key/value pairs 
      in the dictionary. The string has the form 
@@ -58,7 +58,7 @@ abstract class Dictionary {
       value = remove(key)
     }
     for(v <- valList) {
-      put(key,v)
+      put(key, v)
     }
     valList
   }  
@@ -80,13 +80,13 @@ class ListDictionary extends Dictionary {
   /* the dictionary is implemented using a list of key/value pairs.
      For uniformity, the value will always be a List[Any], containing all
      of the values associated with that key. */
-  private var d = List[(String,Any)]()
+  private var d = List[(String, Any)]()
 
   def put(key:String, value: Any):Unit = {
     /* rPut is a recursive strategy of putting something in the dictionary.
        It takes an extra argument (the dictionary) to allow for recursive calls.
        It returns a dictionary meeting the specifications of put. */
-    def rPut(rKey:String, rValue: Any, rD:List[(String,Any)]):List[(String,Any)] = {
+    def rPut(rKey:String, rValue: Any, rD:List[(String, Any)]):List[(String, Any)] = {
       rD match {
         // End of list is reached, add the new key/value entry.
         case Nil => (rKey, List[Any](rValue)) :: rD
@@ -103,11 +103,12 @@ class ListDictionary extends Dictionary {
     d = rPut(key, value, d)
   }
 
+  // Note: this method returns the newest value of the given key.
   def get(key:String):Option[Any] = {
     /* rGet recursively looks through the list.
        It takes the key and dictionary as arguments, and returns None
        if the key is not found, or Some(value) if found. */
-    def rGet(rKey:String, rD:List[(String,Any)]):Option[Any] = {
+    def rGet(rKey:String, rD:List[(String, Any)]):Option[Any] = {
       rD match {
         // End of list is reached, return None.
         case Nil => None
@@ -124,12 +125,13 @@ class ListDictionary extends Dictionary {
     rGet(key, d)
   }
 
+  // Note: this method returns and deletes the newest value of the given key.
   def remove(key:String):Option[Any] = {
     /* rRemove recursively looks through the list.
        It takes the key and dictionary as arguments, and returns
        (List[(String,Any)], Option[Any]).  The first item being the new
        dictionary list, and the second being the result of the search. */
-    def rGet(rKey:String, rD:List[(String,Any)]):(List[(String,Any)],Option[Any]) = {
+    def rRemove(rKey:String, rD:List[(String, Any)]):(List[(String, Any)], Option[Any]) = {
       rD match {
         // End of list is reached, return None.
         case Nil => (rD, None)
@@ -142,13 +144,16 @@ class ListDictionary extends Dictionary {
           else ((`rKey`, v.tail) :: t, Some(v.head)) 
         }
 
-        // The key is not found, try to 'get' from the tail.
-        case h :: t => rGet(rKey, t)
+        // The key is not found, try to remove from the tail.
+        case h :: t => {
+          val results:(List[(String, Any)], Option[Any]) = rRemove(rKey, t)
+          (h :: results._1, results._2)
+        }
       }
     }
 
-    /* Call rGet on the key provided by get. */
-    var results:(List[(String,Any)], Option[Any]) = rGet(key, d)
+    /* Call rRemove on the key provided by get. */
+    val results:(List[(String, Any)], Option[Any]) = rRemove(key, d)
     d = results._1
     results._2
   }
@@ -166,7 +171,7 @@ class ListDictionary extends Dictionary {
     /* addElements recursively flattens each element of a list */
     def addElements(L:List[(String, Any)]):List[(String, Any)] = {
       L match {
-        case Nil => List[(String,Any)]()
+        case Nil => List[(String, Any)]()
         case h :: t => flatten(h) ++ addElements(t)
       }
     }
