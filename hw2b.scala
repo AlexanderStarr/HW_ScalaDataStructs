@@ -104,7 +104,7 @@ class Matrix private (a:Array[Vec]) {
 	   - for all i in [0 .. h-1] and j in [0 .. w-1],  m(i,j) == this(i,j)
 	   - for all i in [h .. r.h-1] and j in [0 .. w-1],  m(i,j) == other(i,j)
 	*/
-	def /(other:Matrix) = new Matrix(rows ++ other.rows)
+	def /(other:Matrix) = new Matrix((Array[Vec]()++ rows) ++ other.rows)
 	
 	/* given a matrix other with other.h == h,
 	   ++(other) returns a new matrix m such that
@@ -114,9 +114,9 @@ class Matrix private (a:Array[Vec]) {
 	   - for all i in [0 .. h-1] and j in [w .. r.w-1],  m(i,j) == other(i,j)
 	*/
 	def ++(other:Matrix) = {
-    val newA = rows
+    val newA = Array.fill(h){new Vec(0.0)}
     for(i <- 0 to h-1) {
-      newA(i) = newA(i) ++ other.rows(i)
+      newA(i) = rows(i) ++ other.rows(i)
     }
     new Matrix(newA)
   }
@@ -129,9 +129,9 @@ class Matrix private (a:Array[Vec]) {
 	     m(i,j) == this(i,j) + other(i,j)
 	*/
 	def +(other:Matrix) = {
-    val newA = rows
+    val newA = Array.fill(h){new Vec(0.0)}
     for(i <- 0 to h - 1) {
-      newA(i) = newA(i) + other.rows(i)
+      newA(i) = rows(i) + other.rows(i)
     }
     new Matrix(newA)
   }
