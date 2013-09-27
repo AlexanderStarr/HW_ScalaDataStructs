@@ -52,13 +52,8 @@ abstract class Dictionary {
   */   
   def getAll(key:String):List[Any] = {
     var valList = List[Any]()
-    var value = remove(key)
-    while (value != None) {
-      valList = value.get :: valList  // remove() returns a Some(), so get the value
-      value = remove(key)
-    }
-    for(v <- valList) {
-      put(key, v)
+    for ((k, v) <- toList) {
+      if (k == key) valList = v :: valList
     }
     valList
   }  
@@ -134,7 +129,7 @@ class ListDictionary extends Dictionary {
     def rRemove(rKey:String, rD:List[(String, Any)]):(List[(String, Any)], Option[Any]) = {
       rD match {
         // End of list is reached, return None.
-        case Nil => (rD, None)
+        case Nil => (Nil, None)
 
         // The key is found, remove then return Some(value).
         case (`rKey`, v:List[Any]) :: t => {
@@ -152,7 +147,7 @@ class ListDictionary extends Dictionary {
       }
     }
 
-    /* Call rRemove on the key provided by get. */
+    /* Call rRemove on the key provided. */
     val results:(List[(String, Any)], Option[Any]) = rRemove(key, d)
     d = results._1
     results._2
@@ -175,7 +170,6 @@ class ListDictionary extends Dictionary {
         case h :: t => flatten(h) ++ addElements(t)
       }
     }
-    
     addElements(d)
   }
 
